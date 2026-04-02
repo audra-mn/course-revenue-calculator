@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import pool from '@/lib/db'
-import { getSession } from '@/lib/auth'
-import { calculate, type AssessmentAnswers } from '@/lib/calculator'
+import pool from '../../../lib/db'
+import { getSession } from '../../../lib/auth'
+import { calculate, type AssessmentAnswers } from '../../../lib/calculator'
 
 export async function POST(req: NextRequest) {
   const session = await getSession()

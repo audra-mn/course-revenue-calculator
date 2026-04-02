@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import pool from '@/lib/db'
-import { formatCurrency, type ProjectionResult } from '@/lib/calculator'
+import pool from '../../../lib/db'
+import { formatCurrency, type ProjectionResult } from '../../../lib/calculator'
 
 async function getAssessment(id: string) {
   try {
