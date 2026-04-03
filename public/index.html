@@ -5,465 +5,262 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CourseCalc — Creator Revenue Calculator</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config = {
-  theme: { extend: { colors: { brand: { 50:'#faf5ff',100:'#f3e8ff',200:'#e9d5ff',500:'#a855f7',600:'#9333ea',700:'#7e22ce',800:'#6b21a8' } } } }
-}
-</script>
-<style>
-body { font-family: system-ui, -apple-system, sans-serif; }
-.section { display: none; }
-.section.active { display: block; }
-</style>
+<script>tailwind.config={theme:{extend:{colors:{brand:{50:'#faf5ff',100:'#f3e8ff',500:'#a855f7',600:'#9333ea',700:'#7e22ce',800:'#6b21a8'}}}}}</script>
+<style>body{font-family:system-ui,-apple-system,sans-serif}.hide{display:none}</style>
 </head>
 <body class="bg-gray-50 min-h-screen">
 
-<!-- NAV -->
-<nav class="bg-white border-b border-gray-200 sticky top-0 z-10">
-  <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
-    <button onclick="show('landing')" class="font-bold text-brand-700 text-lg">CourseCalc</button>
-    <div id="nav-guest" class="flex gap-2">
-      <button onclick="showAuth('login')" class="text-sm text-gray-600 px-4 py-2 rounded-lg hover:bg-gray-100">Sign in</button>
-      <button onclick="showAuth('signup')" class="text-sm bg-brand-600 text-white px-4 py-2 rounded-lg hover:bg-brand-700 font-medium">Get started free</button>
-    </div>
-    <div id="nav-user" class="hidden flex gap-2 items-center">
-      <span id="nav-name" class="text-sm text-gray-600"></span>
-      <button onclick="showCalc()" class="text-sm bg-brand-600 text-white px-4 py-2 rounded-lg hover:bg-brand-700 font-medium">New calculation</button>
-      <button onclick="logout()" class="text-sm text-gray-500 px-3 py-2 hover:text-gray-700">Sign out</button>
-    </div>
+<nav class="bg-white border-b border-gray-200">
+  <div class="max-w-xl mx-auto px-6 h-14 flex items-center justify-between">
+    <span class="font-bold text-brand-700 text-lg">CourseCalc</span>
+    <span class="text-sm text-gray-400">Free creator revenue calculator</span>
   </div>
 </nav>
 
-<!-- LANDING -->
-<div id="s-landing" class="section active">
-  <section class="bg-gradient-to-br from-brand-700 via-brand-800 to-purple-900 text-white py-24 px-6">
-    <div class="max-w-3xl mx-auto text-center">
-      <div class="inline-block bg-white/10 text-brand-200 text-sm font-medium px-4 py-1.5 rounded-full mb-6">Free for creators</div>
-      <h1 class="text-5xl font-extrabold leading-tight mb-6">How much can you make<br>from your online course?</h1>
-      <p class="text-lg text-brand-200 mb-10 max-w-xl mx-auto">Answer a few questions about your audience and course idea — get a personalised revenue projection in minutes.</p>
-      <button onclick="showAuth('signup')" class="bg-white text-brand-700 font-bold px-8 py-4 rounded-xl text-lg hover:bg-brand-50 shadow-lg">Calculate my revenue →</button>
-      <p class="text-brand-300 text-sm mt-4">Takes 3 minutes · No credit card</p>
-    </div>
-  </section>
-  <section class="bg-white border-b border-gray-100 py-12 px-6">
-    <div class="max-w-4xl mx-auto grid grid-cols-3 gap-8 text-center">
-      <div><div class="text-3xl font-extrabold text-brand-700 mb-1">$847k</div><div class="text-sm text-gray-500">Avg annual revenue, top 10% creators</div></div>
-      <div><div class="text-3xl font-extrabold text-brand-700 mb-1">3.2%</div><div class="text-sm text-gray-500">Typical email list conversion rate</div></div>
-      <div><div class="text-3xl font-extrabold text-brand-700 mb-1">72%</div><div class="text-sm text-gray-500">Of creators underestimate their potential</div></div>
-    </div>
-  </section>
-  <section class="py-20 px-6">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">How it works</h2>
-      <div class="grid md:grid-cols-3 gap-8">
-        <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100"><div class="text-brand-600 font-mono font-bold text-sm mb-4">01</div><h3 class="font-bold text-gray-900 mb-2">Tell us about you</h3><p class="text-gray-500 text-sm">Your niche, creator type, and current audience.</p></div>
-        <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100"><div class="text-brand-600 font-mono font-bold text-sm mb-4">02</div><h3 class="font-bold text-gray-900 mb-2">Describe your course</h3><p class="text-gray-500 text-sm">Pricing, format, launch strategy, and marketing.</p></div>
-        <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100"><div class="text-brand-600 font-mono font-bold text-sm mb-4">03</div><h3 class="font-bold text-gray-900 mb-2">Get your projection</h3><p class="text-gray-500 text-sm">Personalised revenue forecast with actionable tips.</p></div>
-      </div>
-    </div>
-  </section>
-</div>
-
-<!-- AUTH -->
-<div id="s-auth" class="section">
-  <div class="min-h-screen flex items-center justify-center py-12 px-4">
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 w-full max-w-sm">
-      <h1 id="auth-title" class="text-2xl font-bold text-gray-900 mb-1">Create your account</h1>
-      <p id="auth-sub" class="text-gray-500 text-sm mb-6">Free forever. No credit card needed.</p>
-      <form id="auth-form" onsubmit="submitAuth(event)" class="space-y-4">
-        <div id="name-field">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Your name</label>
-          <input id="auth-name" type="text" placeholder="Jane Smith" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-          <input id="auth-email" type="email" required placeholder="you@example.com" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-          <input id="auth-password" type="password" required minlength="8" placeholder="Min 8 characters" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-        </div>
-        <div id="auth-error" class="hidden text-red-600 text-sm bg-red-50 px-3 py-2 rounded-lg"></div>
-        <button type="submit" id="auth-btn" class="w-full bg-brand-600 text-white font-semibold py-2.5 rounded-lg hover:bg-brand-700 transition-colors">Create account</button>
-      </form>
-      <p class="text-center text-sm text-gray-500 mt-6">
-        <span id="auth-switch-text">Already have an account?</span>
-        <button id="auth-switch-btn" onclick="toggleAuth()" class="text-brand-600 font-medium hover:underline ml-1">Sign in</button>
-      </p>
-    </div>
-  </div>
-</div>
-
 <!-- CALCULATOR -->
-<div id="s-calc" class="section">
-  <div class="max-w-xl mx-auto px-4 py-10">
-    <!-- Progress -->
-    <div class="flex gap-2 mb-8" id="progress-bar"></div>
+<div id="s-calc">
+  <div class="max-w-xl mx-auto px-4 py-8">
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold text-gray-900">How much can you make from your course?</h1>
+      <p class="text-gray-500 text-sm mt-1">Answer 4 quick questions to get your personalised revenue projection.</p>
+    </div>
+    <div class="flex gap-2 mb-6" id="progress-bar"></div>
     <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-4">
-      <h2 id="step-title" class="text-xl font-bold text-gray-900 mb-6"></h2>
+      <h2 id="step-title" class="text-lg font-bold text-gray-900 mb-5"></h2>
       <div id="step-content"></div>
     </div>
-    <div id="calc-error" class="hidden text-red-600 text-sm bg-red-50 px-4 py-3 rounded-lg mb-4"></div>
+    <p id="calc-error" class="hide text-red-600 text-sm bg-red-50 px-4 py-3 rounded-lg mb-4"></p>
     <div class="flex gap-3">
-      <button id="back-btn" onclick="prevStep()" class="hidden flex-1 border border-gray-300 text-gray-700 font-medium py-3 rounded-xl hover:bg-gray-50">← Back</button>
-      <button id="next-btn" onclick="nextStep()" class="flex-1 bg-brand-600 text-white font-semibold py-3 rounded-xl hover:bg-brand-700">Continue →</button>
+      <button id="back-btn" onclick="prevStep()" class="hide flex-1 border border-gray-300 text-gray-700 font-medium py-3 rounded-xl hover:bg-gray-50">← Back</button>
+      <button id="next-btn" onclick="nextStep()" class="flex-1 bg-brand-600 text-white font-semibold py-3 rounded-xl hover:bg-brand-700 disabled:opacity-50">Continue →</button>
     </div>
   </div>
 </div>
 
 <!-- RESULTS -->
-<div id="s-results" class="section">
-  <div class="max-w-2xl mx-auto px-4 py-10 space-y-6">
+<div id="s-results" class="hide">
+  <div class="max-w-2xl mx-auto px-4 py-10 space-y-5">
     <div class="text-center">
       <p class="text-brand-600 font-medium text-sm mb-1">Your personalised projection</p>
       <h1 id="res-title" class="text-3xl font-extrabold text-gray-900">Course Revenue Potential</h1>
-      <p class="text-gray-500 mt-2 text-sm">Based on your audience, niche, and launch strategy</p>
+      <p class="text-gray-400 text-sm mt-1">Based on your audience, niche, and launch strategy</p>
     </div>
+
     <div class="bg-gradient-to-br from-brand-700 to-purple-900 text-white rounded-2xl p-8">
-      <p class="text-purple-200 text-sm font-medium mb-6">Annual revenue projection (12 months)</p>
-      <div class="grid grid-cols-3 gap-4">
-        <div class="text-center"><div class="text-purple-300 text-xs font-medium uppercase tracking-wide mb-1">Conservative</div><div id="r-conservative" class="text-2xl font-extrabold"></div></div>
-        <div class="text-center bg-white/10 rounded-xl py-3"><div class="text-purple-200 text-xs font-medium uppercase tracking-wide mb-1">Realistic</div><div id="r-realistic" class="text-3xl font-extrabold"></div><div class="text-purple-300 text-xs mt-1">Most likely</div></div>
-        <div class="text-center"><div class="text-purple-300 text-xs font-medium uppercase tracking-wide mb-1">Optimistic</div><div id="r-optimistic" class="text-2xl font-extrabold"></div></div>
+      <p class="text-purple-200 text-sm font-medium mb-5">Annual revenue projection</p>
+      <div class="grid grid-cols-3 gap-4 text-center">
+        <div>
+          <div class="text-purple-300 text-xs uppercase tracking-wide mb-1">Conservative</div>
+          <div id="r-conservative" class="text-2xl font-extrabold"></div>
+        </div>
+        <div class="bg-white/10 rounded-xl py-3">
+          <div class="text-purple-200 text-xs uppercase tracking-wide mb-1">Realistic</div>
+          <div id="r-realistic" class="text-3xl font-extrabold"></div>
+          <div class="text-purple-300 text-xs mt-1">Most likely</div>
+        </div>
+        <div>
+          <div class="text-purple-300 text-xs uppercase tracking-wide mb-1">Optimistic</div>
+          <div id="r-optimistic" class="text-2xl font-extrabold"></div>
+        </div>
       </div>
     </div>
-    <div class="bg-white rounded-2xl border border-gray-200 p-6">
-      <h2 class="font-bold text-gray-900 mb-4">Per-launch breakdown</h2>
-      <div class="grid grid-cols-2 gap-4">
-        <div class="bg-gray-50 rounded-xl p-4"><div class="text-xs text-gray-500 mb-1">Revenue per launch</div><div id="r-per-launch" class="text-2xl font-extrabold text-gray-900"></div></div>
-        <div class="bg-gray-50 rounded-xl p-4"><div class="text-xs text-gray-500 mb-1">Launches per year</div><div id="r-launches" class="text-2xl font-extrabold text-gray-900"></div></div>
-        <div class="bg-gray-50 rounded-xl p-4"><div class="text-xs text-gray-500 mb-1">Est. buyers from email</div><div id="r-email-buyers" class="text-2xl font-extrabold text-gray-900"></div></div>
-        <div class="bg-gray-50 rounded-xl p-4"><div class="text-xs text-gray-500 mb-1">Est. buyers from social</div><div id="r-social-buyers" class="text-2xl font-extrabold text-gray-900"></div></div>
-      </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white rounded-xl border border-gray-200 p-4"><div class="text-xs text-gray-500 mb-1">Revenue per launch</div><div id="r-per-launch" class="text-2xl font-extrabold text-gray-900"></div></div>
+      <div class="bg-white rounded-xl border border-gray-200 p-4"><div class="text-xs text-gray-500 mb-1">Launches per year</div><div id="r-launches" class="text-2xl font-extrabold text-gray-900"></div></div>
+      <div class="bg-white rounded-xl border border-gray-200 p-4"><div class="text-xs text-gray-500 mb-1">Est. buyers from email</div><div id="r-email-buyers" class="text-2xl font-extrabold text-gray-900"></div></div>
+      <div class="bg-white rounded-xl border border-gray-200 p-4"><div class="text-xs text-gray-500 mb-1">Est. buyers from social</div><div id="r-social-buyers" class="text-2xl font-extrabold text-gray-900"></div></div>
     </div>
+
     <div class="bg-white rounded-2xl border border-gray-200 p-6">
       <h2 class="font-bold text-gray-900 mb-3">What's working in your favour</h2>
       <ul id="r-factors" class="space-y-2"></ul>
     </div>
+
     <div class="bg-amber-50 border border-amber-200 rounded-2xl p-6">
-      <h2 class="font-bold text-gray-900 mb-3">Top tips to increase your revenue</h2>
+      <h2 class="font-bold text-gray-900 mb-3">Tips to increase your revenue</h2>
       <ul id="r-tips" class="space-y-2"></ul>
     </div>
+
     <div class="text-center">
-      <button onclick="showCalc()" class="bg-brand-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-brand-700">Recalculate with different inputs →</button>
+      <button onclick="restart()" class="bg-brand-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-brand-700">Calculate again →</button>
     </div>
   </div>
 </div>
 
 <script>
-// ── State ──────────────────────────────────────────────────────────────
-let authMode = 'signup'
-let currentStep = 0
-let answers = {
+let step = 0
+let a = {
   name:'', creatorType:'', niche:'',
   emailListSize:'0', primaryPlatform:'None', followerCount:'0', engagementLevel:'medium',
   courseCount:'1', courseType:'signature', price:497, experienceLevel:'first_time',
   launchType:'live', contentFrequency:'weekly', marketingBudget:'none', hasTestimonials:'none'
 }
+const steps = ['About You','Your Audience','Your Course','Launch & Marketing']
 
-// ── Navigation ─────────────────────────────────────────────────────────
-function show(id) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'))
-  document.getElementById('s-' + id).classList.add('active')
-}
-
-function showAuth(mode) {
-  authMode = mode
-  document.getElementById('auth-title').textContent = mode === 'signup' ? 'Create your account' : 'Welcome back'
-  document.getElementById('auth-sub').textContent = mode === 'signup' ? 'Free forever. No credit card needed.' : 'Sign in to see your projections.'
-  document.getElementById('auth-btn').textContent = mode === 'signup' ? 'Create account' : 'Sign in'
-  document.getElementById('auth-switch-text').textContent = mode === 'signup' ? 'Already have an account?' : "Don't have an account?"
-  document.getElementById('auth-switch-btn').textContent = mode === 'signup' ? 'Sign in' : 'Sign up'
-  document.getElementById('name-field').style.display = mode === 'signup' ? 'block' : 'none'
-  document.getElementById('auth-error').classList.add('hidden')
-  show('auth')
-}
-
-function toggleAuth() {
-  showAuth(authMode === 'signup' ? 'login' : 'signup')
-}
-
-function showCalc() {
-  currentStep = 0
-  answers = {
-    name:'', creatorType:'', niche:'',
-    emailListSize:'0', primaryPlatform:'None', followerCount:'0', engagementLevel:'medium',
-    courseCount:'1', courseType:'signature', price:497, experienceLevel:'first_time',
-    launchType:'live', contentFrequency:'weekly', marketingBudget:'none', hasTestimonials:'none'
-  }
-  renderStep()
-  show('calc')
-}
-
-// ── Auth ───────────────────────────────────────────────────────────────
-async function submitAuth(e) {
-  e.preventDefault()
-  const btn = document.getElementById('auth-btn')
-  btn.disabled = true
-  btn.textContent = 'Please wait...'
-  document.getElementById('auth-error').classList.add('hidden')
-  try {
-    const body = {
-      email: document.getElementById('auth-email').value,
-      password: document.getElementById('auth-password').value,
-    }
-    if (authMode === 'signup') body.name = document.getElementById('auth-name').value
-    const res = await fetch('/api/' + authMode, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) })
-    const data = await res.json()
-    if (!res.ok) throw new Error(data.error)
-    await loadUser()
-    showCalc()
-  } catch(err) {
-    const el = document.getElementById('auth-error')
-    el.textContent = err.message
-    el.classList.remove('hidden')
-  } finally {
-    btn.disabled = false
-    btn.textContent = authMode === 'signup' ? 'Create account' : 'Sign in'
-  }
-}
-
-async function logout() {
-  await fetch('/api/logout', { method:'POST' })
-  document.getElementById('nav-guest').classList.remove('hidden')
-  document.getElementById('nav-user').classList.add('hidden')
-  show('landing')
-}
-
-async function loadUser() {
-  try {
-    const res = await fetch('/api/me')
-    if (!res.ok) return
-    const user = await res.json()
-    document.getElementById('nav-guest').classList.add('hidden')
-    document.getElementById('nav-user').classList.remove('hidden')
-    document.getElementById('nav-name').textContent = user.name || user.email
-    return user
-  } catch { return null }
-}
-
-// ── Calculator ─────────────────────────────────────────────────────────
-const steps = [
-  { title: 'About You' },
-  { title: 'Your Audience' },
-  { title: 'Your Course' },
-  { title: 'Launch & Marketing' },
-]
-
-function radio(name, value, current, label, desc) {
-  const checked = current === value ? 'checked' : ''
-  const active = current === value ? 'border-brand-500 bg-brand-50' : 'border-gray-200 hover:border-gray-300'
-  return `<label class="flex items-start gap-3 p-3.5 rounded-xl border-2 cursor-pointer transition-all ${active}" onclick="setAnswer('${name}','${value}');renderStep()">
-    <input type="radio" name="${name}" value="${value}" ${checked} class="mt-0.5 accent-purple-600" onchange="setAnswer('${name}','${value}');renderStep()">
-    <div><div class="font-medium text-gray-900 text-sm">${label}</div>${desc ? `<div class="text-xs text-gray-500 mt-0.5">${desc}</div>` : ''}</div>
+function r(name, val, label, desc) {
+  const on = a[name]===val
+  return `<label class="flex items-start gap-3 p-3.5 rounded-xl border-2 cursor-pointer ${on?'border-brand-500 bg-brand-50':'border-gray-200 hover:border-gray-300'}" onclick="a['${name}']='${val}';renderStep()">
+    <input type="radio" name="${name}" ${on?'checked':''} class="mt-0.5 accent-purple-600">
+    <div><div class="font-medium text-sm text-gray-900">${label}</div>${desc?`<div class="text-xs text-gray-500 mt-0.5">${desc}</div>`:''}</div>
   </label>`
 }
-
-function chip(name, value, current, label) {
-  const active = current === value ? 'border-brand-500 bg-brand-50 text-brand-800 font-semibold' : 'border-gray-200 text-gray-600 hover:border-gray-300'
-  return `<label class="flex items-center justify-center p-2.5 rounded-lg border-2 cursor-pointer text-sm transition-all ${active}" onclick="setAnswer('${name}','${value}');renderStep()">
-    <input type="radio" name="${name}" class="sr-only" ${current===value?'checked':''}>${label}
-  </label>`
+function c(name, val, label) {
+  const on = a[name]===val
+  return `<label class="flex items-center justify-center p-2.5 rounded-lg border-2 cursor-pointer text-sm ${on?'border-brand-500 bg-brand-50 text-brand-800 font-semibold':'border-gray-200 text-gray-600 hover:border-gray-300'}" onclick="a['${name}']='${val}';renderStep()">${label}</label>`
 }
 
-function setAnswer(key, value) { answers[key] = value }
+function stepHTML() {
+  if (step===0) return `<div class="space-y-4">
+    <div><label class="block text-sm font-medium text-gray-700 mb-1">Your first name</label>
+    <input type="text" value="${a.name}" oninput="a.name=this.value" placeholder="Jane" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></div>
+    <div><label class="block text-sm font-medium text-gray-700 mb-2">What type of creator are you?</label>
+    <div class="grid grid-cols-2 gap-2">${['Business/Marketing','Finance/Investing','Technology/Coding','Personal Development','Health & Wellness','Creative Arts','Food/Cooking','Relationships/Dating','Parenting/Family','Other'].map(t=>c('creatorType',t,t)).join('')}</div></div>
+    <div><label class="block text-sm font-medium text-gray-700 mb-1">Course topic in one sentence</label>
+    <input type="text" value="${a.niche}" oninput="a.niche=this.value" placeholder='e.g. "Help freelancers charge more"' class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></div>
+  </div>`
 
-function stepHTML(i) {
-  const a = answers
-  if (i === 0) return `
-    <div class="space-y-4">
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Your first name</label>
-        <input type="text" value="${a.name}" oninput="answers.name=this.value" placeholder="Jane" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">What type of creator are you?</label>
-        <div class="grid grid-cols-2 gap-2">
-          ${['Business/Marketing','Finance/Investing','Technology/Coding','Personal Development','Health & Wellness','Creative Arts','Food/Cooking','Relationships/Dating','Parenting/Family','Other'].map(t => chip('creatorType',t,a.creatorType,t)).join('')}
-        </div>
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Course topic in one sentence</label>
-        <input type="text" value="${a.niche}" oninput="answers.niche=this.value" placeholder='e.g. "Help freelancers charge more for their work"' class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-      </div>
-    </div>`
-  if (i === 1) return `
-    <div class="space-y-5">
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Email list size</label>
-        <div class="space-y-2">
-          ${radio('emailListSize','0',a.emailListSize,'No email list yet','')}
-          ${radio('emailListSize','1-500',a.emailListSize,'1–500 subscribers','')}
-          ${radio('emailListSize','500-2000',a.emailListSize,'500–2,000','')}
-          ${radio('emailListSize','2000-10000',a.emailListSize,'2,000–10,000','')}
-          ${radio('emailListSize','10000+',a.emailListSize,'10,000+','')}
-        </div>
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Primary social platform</label>
-        <div class="grid grid-cols-4 gap-2">
-          ${['Instagram','YouTube','TikTok','LinkedIn','Podcast','Facebook','Other','None'].map(p => chip('primaryPlatform',p,a.primaryPlatform,p)).join('')}
-        </div>
-      </div>
-      ${a.primaryPlatform !== 'None' ? `<div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Followers on ${a.primaryPlatform}</label>
-        <div class="space-y-2">
-          ${radio('followerCount','0',a.followerCount,'Under 1,000','')}
-          ${radio('followerCount','1-1000',a.followerCount,'1,000–10,000','')}
-          ${radio('followerCount','1000-10000',a.followerCount,'10,000–100,000','')}
-          ${radio('followerCount','10000-100000',a.followerCount,'100,000–1M','')}
-          ${radio('followerCount','100000+',a.followerCount,'Over 1M','')}
-        </div>
-      </div>` : ''}
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">How engaged is your audience?</label>
-        <div class="space-y-2">
-          ${radio('engagementLevel','low',a.engagementLevel,'Low','Few likes or comments, minimal interaction')}
-          ${radio('engagementLevel','medium',a.engagementLevel,'Medium','Some regular engagement and replies')}
-          ${radio('engagementLevel','high',a.engagementLevel,'High','Active, responsive community with consistent comments')}
-          ${radio('engagementLevel','exceptional',a.engagementLevel,'Exceptional','Cult-like following — huge trust, people quote you')}
-        </div>
-      </div>
-    </div>`
-  if (i === 2) return `
-    <div class="space-y-5">
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Courses you plan to launch in 12 months</label>
-        <div class="space-y-2">
-          ${radio('courseCount','1',a.courseCount,'1 course','')}
-          ${radio('courseCount','2-3',a.courseCount,'2–3 courses','')}
-          ${radio('courseCount','4+',a.courseCount,'4 or more','')}
-        </div>
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Course type</label>
-        <div class="space-y-2">
-          ${radio('courseType','mini',a.courseType,'Mini-course','Short, focused — typically $47–$197')}
-          ${radio('courseType','signature',a.courseType,'Signature course','Comprehensive — typically $297–$997')}
-          ${radio('courseType','cohort',a.courseType,'Cohort / Group program','Live group experience — $1,000–$3,000')}
-          ${radio('courseType','highticket',a.courseType,'High-ticket / Mastermind','Premium access — $3,000+')}
-        </div>
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Your price ($)</label>
-        <input type="number" min="1" value="${a.price}" oninput="answers.price=Number(this.value)" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Have you sold courses before?</label>
-        <div class="space-y-2">
-          ${radio('experienceLevel','first_time',a.experienceLevel,'No — this is my first','')}
-          ${radio('experienceLevel','some',a.experienceLevel,'Yes, some sales (under $10k)','')}
-          ${radio('experienceLevel','mid',a.experienceLevel,'Yes, made $10k–$100k','')}
-          ${radio('experienceLevel','experienced',a.experienceLevel,'Yes, made $100k+','')}
-        </div>
-      </div>
-    </div>`
-  if (i === 3) return `
-    <div class="space-y-5">
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">How will you launch?</label>
-        <div class="space-y-2">
-          ${radio('launchType','live',a.launchType,'Live launch','Webinar, challenge, or open cart with urgency')}
-          ${radio('launchType','evergreen',a.launchType,'Evergreen funnel','Always-on funnel with ads + email sequences')}
-          ${radio('launchType','both',a.launchType,'Both — live and evergreen','')}
-          ${radio('launchType','unsure',a.launchType,'Not sure yet','')}
-        </div>
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">How often do you create content?</label>
-        <div class="space-y-2">
-          ${radio('contentFrequency','rarely',a.contentFrequency,'Rarely or never','')}
-          ${radio('contentFrequency','weekly',a.contentFrequency,'1–2× per week','')}
-          ${radio('contentFrequency','multiple',a.contentFrequency,'3–5× per week','')}
-          ${radio('contentFrequency','daily',a.contentFrequency,'Daily or more','')}
-        </div>
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Monthly marketing / ads budget</label>
-        <div class="space-y-2">
-          ${radio('marketingBudget','none',a.marketingBudget,'None — organic only','')}
-          ${radio('marketingBudget','low',a.marketingBudget,'Under $500/mo','')}
-          ${radio('marketingBudget','medium',a.marketingBudget,'$500–$2,000/mo','')}
-          ${radio('marketingBudget','high',a.marketingBudget,'Over $2,000/mo','')}
-        </div>
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Do you have testimonials or proven results?</label>
-        <div class="space-y-2">
-          ${radio('hasTestimonials','none',a.hasTestimonials,'Not yet — just getting started','')}
-          ${radio('hasTestimonials','starting',a.hasTestimonials,'A couple of informal ones','')}
-          ${radio('hasTestimonials','some',a.hasTestimonials,'Yes, a handful of solid testimonials','')}
-          ${radio('hasTestimonials','strong',a.hasTestimonials,'Strong — multiple case studies','')}
-        </div>
-      </div>
-    </div>`
+  if (step===1) return `<div class="space-y-5">
+    <div><label class="block text-sm font-medium text-gray-700 mb-2">Email list size</label><div class="space-y-2">
+      ${r('emailListSize','0','No email list yet','')}
+      ${r('emailListSize','1-500','1–500 subscribers','')}
+      ${r('emailListSize','500-2000','500–2,000','')}
+      ${r('emailListSize','2000-10000','2,000–10,000','')}
+      ${r('emailListSize','10000+','10,000+','')}
+    </div></div>
+    <div><label class="block text-sm font-medium text-gray-700 mb-2">Primary social platform</label>
+    <div class="grid grid-cols-4 gap-2">${['Instagram','YouTube','TikTok','LinkedIn','Podcast','Facebook','Other','None'].map(p=>c('primaryPlatform',p,p)).join('')}</div></div>
+    ${a.primaryPlatform!=='None'?`<div><label class="block text-sm font-medium text-gray-700 mb-2">Followers on ${a.primaryPlatform}</label><div class="space-y-2">
+      ${r('followerCount','0','Under 1,000','')}
+      ${r('followerCount','1-1000','1,000–10,000','')}
+      ${r('followerCount','1000-10000','10,000–100,000','')}
+      ${r('followerCount','10000-100000','100,000–1M','')}
+      ${r('followerCount','100000+','Over 1M','')}
+    </div></div>`:''}
+    <div><label class="block text-sm font-medium text-gray-700 mb-2">How engaged is your audience?</label><div class="space-y-2">
+      ${r('engagementLevel','low','Low','Few likes or comments')}
+      ${r('engagementLevel','medium','Medium','Some regular engagement')}
+      ${r('engagementLevel','high','High','Active, responsive community')}
+      ${r('engagementLevel','exceptional','Exceptional','Cult-like following, huge trust')}
+    </div></div>
+  </div>`
+
+  if (step===2) return `<div class="space-y-5">
+    <div><label class="block text-sm font-medium text-gray-700 mb-2">Courses you plan to launch in 12 months</label><div class="space-y-2">
+      ${r('courseCount','1','1 course','')}
+      ${r('courseCount','2-3','2–3 courses','')}
+      ${r('courseCount','4+','4 or more','')}
+    </div></div>
+    <div><label class="block text-sm font-medium text-gray-700 mb-2">Course type</label><div class="space-y-2">
+      ${r('courseType','mini','Mini-course','Short, focused — typically $47–$197')}
+      ${r('courseType','signature','Signature course','Comprehensive — typically $297–$997')}
+      ${r('courseType','cohort','Cohort / Group program','Live group — $1,000–$3,000')}
+      ${r('courseType','highticket','High-ticket / Mastermind','Premium — $3,000+')}
+    </div></div>
+    <div><label class="block text-sm font-medium text-gray-700 mb-1">Your price ($)</label>
+    <input type="number" min="1" value="${a.price}" oninput="a.price=Number(this.value)" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></div>
+    <div><label class="block text-sm font-medium text-gray-700 mb-2">Have you sold courses before?</label><div class="space-y-2">
+      ${r('experienceLevel','first_time','No — this is my first','')}
+      ${r('experienceLevel','some','Yes, some sales (under $10k)','')}
+      ${r('experienceLevel','mid','Yes, made $10k–$100k','')}
+      ${r('experienceLevel','experienced','Yes, made $100k+','')}
+    </div></div>
+  </div>`
+
+  if (step===3) return `<div class="space-y-5">
+    <div><label class="block text-sm font-medium text-gray-700 mb-2">How will you launch?</label><div class="space-y-2">
+      ${r('launchType','live','Live launch','Webinar, challenge, or open cart with urgency')}
+      ${r('launchType','evergreen','Evergreen funnel','Always-on funnel with email sequences')}
+      ${r('launchType','both','Both — live and evergreen','')}
+      ${r('launchType','unsure','Not sure yet','')}
+    </div></div>
+    <div><label class="block text-sm font-medium text-gray-700 mb-2">How often do you create content?</label><div class="space-y-2">
+      ${r('contentFrequency','rarely','Rarely or never','')}
+      ${r('contentFrequency','weekly','1–2× per week','')}
+      ${r('contentFrequency','multiple','3–5× per week','')}
+      ${r('contentFrequency','daily','Daily or more','')}
+    </div></div>
+    <div><label class="block text-sm font-medium text-gray-700 mb-2">Monthly marketing / ads budget</label><div class="space-y-2">
+      ${r('marketingBudget','none','None — organic only','')}
+      ${r('marketingBudget','low','Under $500/mo','')}
+      ${r('marketingBudget','medium','$500–$2,000/mo','')}
+      ${r('marketingBudget','high','Over $2,000/mo','')}
+    </div></div>
+    <div><label class="block text-sm font-medium text-gray-700 mb-2">Do you have testimonials or proven results?</label><div class="space-y-2">
+      ${r('hasTestimonials','none','Not yet — just getting started','')}
+      ${r('hasTestimonials','starting','A couple of informal ones','')}
+      ${r('hasTestimonials','some','Yes, a handful of solid testimonials','')}
+      ${r('hasTestimonials','strong','Strong — multiple case studies','')}
+    </div></div>
+  </div>`
 }
 
 function renderStep() {
-  const bar = document.getElementById('progress-bar')
-  bar.innerHTML = steps.map((s,i) => `
+  document.getElementById('progress-bar').innerHTML = steps.map((s,i)=>`
     <div class="flex-1">
-      <div class="h-1.5 rounded-full ${i<=currentStep?'bg-brand-500':'bg-gray-200'}"></div>
-      <div class="text-xs mt-1 font-medium ${i===currentStep?'text-brand-600':'text-gray-400'}">${s.title}</div>
+      <div class="h-1.5 rounded-full ${i<=step?'bg-brand-500':'bg-gray-200'}"></div>
+      <div class="text-xs mt-1 font-medium ${i===step?'text-brand-600':'text-gray-400'}">${s}</div>
     </div>`).join('')
-  document.getElementById('step-title').textContent = steps[currentStep].title
-  document.getElementById('step-content').innerHTML = stepHTML(currentStep)
-  document.getElementById('back-btn').classList.toggle('hidden', currentStep === 0)
-  const nextBtn = document.getElementById('next-btn')
-  nextBtn.textContent = currentStep < steps.length - 1 ? 'Continue →' : 'Show my revenue projection →'
+  document.getElementById('step-title').textContent = steps[step]
+  document.getElementById('step-content').innerHTML = stepHTML()
+  const backBtn = document.getElementById('back-btn')
+  backBtn.classList.toggle('hide', step===0)
+  document.getElementById('next-btn').textContent = step < steps.length-1 ? 'Continue →' : 'Show my revenue projection →'
 }
 
-function prevStep() { if (currentStep > 0) { currentStep--; renderStep() } }
+function prevStep() { if(step>0){step--;renderStep()} }
 
 async function nextStep() {
-  if (currentStep < steps.length - 1) {
-    currentStep++
-    renderStep()
-  } else {
-    const btn = document.getElementById('next-btn')
-    btn.disabled = true
-    btn.textContent = 'Calculating...'
-    document.getElementById('calc-error').classList.add('hidden')
-    try {
-      const res = await fetch('/api/calculate', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(answers) })
-      if (res.status === 401) { showAuth('login'); return }
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error)
-      showResults(data.projection, answers.name)
-    } catch(err) {
-      const el = document.getElementById('calc-error')
-      el.textContent = err.message || 'Something went wrong'
-      el.classList.remove('hidden')
-    } finally {
-      btn.disabled = false
-      btn.textContent = 'Show my revenue projection →'
-    }
+  if (step < steps.length-1) { step++; renderStep(); return }
+  const btn = document.getElementById('next-btn')
+  btn.disabled = true
+  btn.textContent = 'Calculating...'
+  document.getElementById('calc-error').classList.add('hide')
+  try {
+    const res = await fetch('/api/calculate', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(a)})
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error)
+    showResults(data.projection)
+  } catch(err) {
+    const el = document.getElementById('calc-error')
+    el.textContent = err.message || 'Something went wrong — please try again'
+    el.classList.remove('hide')
+  } finally {
+    btn.disabled = false
+    btn.textContent = 'Show my revenue projection →'
   }
 }
 
-// ── Results ────────────────────────────────────────────────────────────
 function fmt(n) {
-  if (n >= 1000000) return '$' + (n/1000000).toFixed(1) + 'M'
-  if (n >= 1000) return '$' + Math.round(n/1000) + 'k'
-  return '$' + n.toLocaleString()
+  if (n>=1000000) return '$'+(n/1000000).toFixed(1)+'M'
+  if (n>=1000) return '$'+Math.round(n/1000)+'k'
+  return '$'+n.toLocaleString()
 }
 
-function showResults(p, name) {
-  document.getElementById('res-title').textContent = (name ? name + "'s" : 'Your') + ' Course Revenue Potential'
+function showResults(p) {
+  document.getElementById('res-title').textContent = (a.name ? a.name+"'s" : 'Your') + ' Course Revenue Potential'
   document.getElementById('r-conservative').textContent = fmt(p.conservative)
   document.getElementById('r-realistic').textContent = fmt(p.realistic)
   document.getElementById('r-optimistic').textContent = fmt(p.optimistic)
   document.getElementById('r-per-launch').textContent = fmt(p.perLaunch)
-  document.getElementById('r-launches').textContent = p.annualLaunches + '×'
+  document.getElementById('r-launches').textContent = p.annualLaunches+'×'
   document.getElementById('r-email-buyers').textContent = p.emailBuyers
   document.getElementById('r-social-buyers').textContent = p.socialBuyers
-  document.getElementById('r-factors').innerHTML = p.factors.map(f => `<li class="flex items-start gap-2 text-sm text-gray-700"><span class="text-green-500 mt-0.5">✓</span>${f}</li>`).join('')
-  document.getElementById('r-tips').innerHTML = p.tips.map((t,i) => `<li class="flex items-start gap-2 text-sm text-gray-700"><span class="text-amber-500 font-bold mt-0.5">${i+1}.</span>${t}</li>`).join('')
-  show('results')
+  document.getElementById('r-factors').innerHTML = p.factors.map(f=>`<li class="flex items-start gap-2 text-sm text-gray-700"><span class="text-green-500">✓</span>${f}</li>`).join('')
+  document.getElementById('r-tips').innerHTML = p.tips.map((t,i)=>`<li class="flex items-start gap-2 text-sm text-gray-700"><span class="text-amber-500 font-bold">${i+1}.</span>${t}</li>`).join('')
+  document.getElementById('s-calc').classList.add('hide')
+  document.getElementById('s-results').classList.remove('hide')
 }
 
-// ── Init ───────────────────────────────────────────────────────────────
-loadUser()
+function restart() {
+  step=0
+  a={name:'',creatorType:'',niche:'',emailListSize:'0',primaryPlatform:'None',followerCount:'0',engagementLevel:'medium',courseCount:'1',courseType:'signature',price:497,experienceLevel:'first_time',launchType:'live',contentFrequency:'weekly',marketingBudget:'none',hasTestimonials:'none'}
+  document.getElementById('s-results').classList.add('hide')
+  document.getElementById('s-calc').classList.remove('hide')
+  renderStep()
+}
+
+renderStep()
 </script>
 </body>
 </html>
